@@ -3,14 +3,11 @@ import requests
 
 class ApiService:
     def __init__(self):
-        # A URL base pode ser útil se você tiver mais chamadas
+        
         self.base_url = "https://api.transferegov.gestao.gov.br/transferenciasespeciais"
 
     def fetch_and_process_data(self):
-        """
-        Executa a lógica completa do Jupyter para buscar, unir e filtrar
-        os dados das transferências especiais.
-        """
+        
         CNPJ_PE = "10571982000125"
 
         # --- ETAPA 1: Buscar os Planos de Ação ---
@@ -66,39 +63,22 @@ class ApiService:
         )
         print("✓ Tabelas unidas com sucesso!")
 
-        # --- ETAPA 5: Filtrar e Renomear as colunas de interesse ---
+         # --- ETAPA 5: Filtrar e Renomear as colunas de interesse ---
         print("5. Filtrando e formatando o relatório final...")
-
-        # Lista com os nomes exatos das colunas que você escolheu
+        
         colunas_de_interesse = [
-            'situacao_plano_trabalho',
-            'data_inicio_execucao_plano_trabalho',
-            'data_fim_execucao_plano_trabalho',
-            'codigo_plano_acao',
-            'situacao_plano_acao',
-            'cnpj_beneficiario_plano_acao',
-            'nome_beneficiario_plano_acao',
-            'numero_conta_plano_acao',
-            'nome_parlamentar_emenda_plano_acao',
-            'ano_emenda_parlamentar_plano_acao',
-            'numero_emenda_parlamentar_plano_acao',
-            'codigo_descricao_areas_politicas_publicas_plano_acao',
-            'motivo_impedimento_plano_acao',
-            'valor_custeio_plano_acao',
-            'valor_investimento_plano_acao',
-            'cnpj_executor',
-            'nome_executor',
-            'objeto_executor',
-            'vl_custeio_executor',
-            'vl_investimento_executor',
-            'numero_conta_executor',
+            'situacao_plano_trabalho', 'data_inicio_execucao_plano_trabalho',
+            'data_fim_execucao_plano_trabalho', 'codigo_plano_acao', 'situacao_plano_acao',
+            'cnpj_beneficiario_plano_acao', 'nome_beneficiario_plano_acao', 'numero_conta_plano_acao',
+            'nome_parlamentar_emenda_plano_acao', 'ano_emenda_parlamentar_plano_acao',
+            'numero_emenda_parlamentar_plano_acao', 'codigo_descricao_areas_politicas_publicas_plano_acao',
+            'motivo_impedimento_plano_acao', 'valor_custeio_plano_acao', 'valor_investimento_plano_acao',
+            'cnpj_executor', 'nome_executor', 'objeto_executor', 'vl_custeio_executor',
+            'vl_investimento_executor', 'numero_conta_executor',
         ]
 
-        # Filtra o DataFrame para conter apenas as colunas de interesse
         df_filtrado = df_merged[colunas_de_interesse]
-
-        # Renomeia as colunas para nomes mais amigáveis para a planilha final
-        df_final = df_filtrado.rename(columns={
+        df_renomeado = df_filtrado.rename(columns={
             'situacao_plano_trabalho': 'Situação do Plano de Trabalho',
             'data_inicio_execucao_plano_trabalho': 'Início da Execução',
             'data_fim_execucao_plano_trabalho': 'Fim da Execução',
@@ -122,5 +102,21 @@ class ApiService:
             'numero_conta_executor': 'Nº Conta do Executor'
         })
 
-        print("✓ DataFrame final gerado com sucesso!")
+        # --- ETAPA 6: Padronizar e Formatar Colunas Numéricas ---
+        print("6. Padronizando colunas de valores...")
+        
+        colunas_de_valor = [
+            'Valor de Custeio (Plano)',
+            'Valor de Investimento (Plano)',
+            'Valor de Custeio (Executor)',
+            'Valor de Investimento (Executor)'
+        ]
+
+        for coluna in colunas_de_valor:
+            if coluna in df_renomeado.columns:
+                df_renomeado[coluna] = df_renomeado[coluna].fillna(0).round(0).astype(int)
+        
+        df_final = df_renomeado
+
+        print("✓ DataFrame final gerado e formatado com sucesso!")
         return df_final

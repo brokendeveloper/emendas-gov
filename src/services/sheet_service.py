@@ -26,7 +26,6 @@ class SheetService:
         except Exception as e:
             raise Exception(f"Erro ao ler aba: {str(e)}")
 
-    # --- MÉTODO ATUALIZADO E MAIS INTELIGENTE ---
     def update_worksheet_with_dataframe(self, spreadsheet, worksheet_name, df):
         """
         Verifica se uma aba existe. Se sim, limpa e a preenche com os dados
@@ -41,10 +40,8 @@ class SheetService:
         except gspread.WorksheetNotFound:
             # Se a aba não for encontrada, cria uma nova
             print(f"Aba '{worksheet_name}' não encontrada. Criando uma nova aba...")
-            # Adiciona a aba com um tamanho padrão (ex: 1000 linhas, 50 colunas)
             worksheet = spreadsheet.add_worksheet(title=worksheet_name, rows="1000", cols="50")
         
-        # Agora, com a aba garantida (existente ou recém-criada), preenche com os dados
         print(f"Escrevendo {len(df)} linhas na aba...")
         set_with_dataframe(worksheet, df)
         print(f"✓ Dados salvos com sucesso na planilha '{spreadsheet.title}'!")

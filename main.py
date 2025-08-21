@@ -6,15 +6,11 @@ from src.services.sheet_service import SheetService
 from src.services.api_service import ApiService
 
 def main():
-    # ##################################################################
-    # ## DEFINA SEU VALOR PADRÃO AQUI ##
-    # ##################################################################
-    # Este é o nome da aba que será procurada. Se não for encontrada, será criada.
+
     NOME_DA_ABA_ALVO = "Base API Emendas Esp"
 
     try:
         # --- ETAPA 1: AUTENTICAÇÃO E CONFIGURAÇÃO ---
-        # ... (código existente) ...
         print("1. Carregando configurações e autenticando...")
         load_dotenv()
         credentials_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
@@ -38,7 +34,6 @@ def main():
         spreadsheet = sheet_service.get_spreadsheet(nome_planilha)
         print(f"✓ Planilha '{spreadsheet.title}' encontrada!")
 
-        # Usando a variável que definimos no início
         sheet_service.update_worksheet_with_dataframe(spreadsheet, NOME_DA_ABA_ALVO, dados_finais_df)
         
         print("\nPROCESSO CONCLUÍDO COM SUCESSO!")
